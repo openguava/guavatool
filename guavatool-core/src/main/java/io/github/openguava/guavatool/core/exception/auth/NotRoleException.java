@@ -7,7 +7,7 @@ import io.github.openguava.guavatool.core.util.StringUtils;
  * 
  * @author openguava
  */
-public class NotRoleException extends RuntimeException {
+public class NotRoleException extends AuthenticationException {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -17,5 +17,6 @@ public class NotRoleException extends RuntimeException {
 
 	public NotRoleException(String[] roles) {
 		super(StringUtils.join(roles, ","));
+		super.setCode(AuthenticationException.CODE_FORBIDDEN);
 	}
 }

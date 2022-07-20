@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @param <V> 值类型
  * @author openguava
  */
-public class Pair<K, V> implements Cloneable, Serializable {
+public class Pair<K, V> implements Cloneable, Serializable, java.util.Map.Entry<K, V> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -42,6 +42,10 @@ public class Pair<K, V> implements Cloneable, Serializable {
 	 * @return 值
 	 */
 	public V getValue() {
+		return this.value;
+	}
+	
+	public V setValue(V value) {
 		return this.value;
 	}
 	

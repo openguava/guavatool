@@ -483,7 +483,7 @@ public class NumberUtils {
 	 * @return 积
 	 */
 	public static BigDecimal multiply(BigDecimal... values) {
-		if (CollectionUtils.isEmpty(values) || CollectionUtils.hasNull(values)) {
+		if (ArrayUtils.isEmpty(values) || ArrayUtils.hasNull(values)) {
 			return BigDecimal.ZERO;
 		}
 		BigDecimal result = values[0];

@@ -1172,7 +1172,7 @@ public class StringUtils {
 		} else if (obj instanceof ByteBuffer) {
 			return toString((ByteBuffer) obj, charset);
 		} else if (obj.getClass().isArray()) {
-			return CollectionUtils.toString(obj);
+			return ArrayUtils.toString(obj);
 		}
 		return obj.toString();
 	}

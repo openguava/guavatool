@@ -26,7 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import io.github.openguava.guavatool.core.constant.StringConstants;
-import io.github.openguava.guavatool.spring.bean.SpringContextHolder;
+import io.github.openguava.guavatool.spring.context.SpringContextHolder;
 
 /***
  * spring 工具类

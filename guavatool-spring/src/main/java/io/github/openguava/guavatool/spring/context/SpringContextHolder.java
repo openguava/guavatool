@@ -1,4 +1,4 @@
-package io.github.openguava.guavatool.spring.bean;
+package io.github.openguava.guavatool.spring.context;
 
 import java.util.Locale;
 

@@ -1,5 +1,7 @@
 package io.github.openguava.guavatool.core.exception;
 
+import io.github.openguava.guavatool.core.util.StringUtils;
+
 /**
  * 工具类异常
  * 
@@ -17,7 +19,15 @@ public class UtilException extends RuntimeException {
 		super(message);
 	}
 
+	public UtilException(String messageTemplate, Object... params) {
+		super(StringUtils.format(messageTemplate, params));
+	}
+	
 	public UtilException(String message, Throwable throwable) {
 		super(message, throwable);
+	}
+	
+	public UtilException(Throwable throwable, String messageTemplate, Object... params) {
+		super(StringUtils.format(messageTemplate, params), throwable);
 	}
 }

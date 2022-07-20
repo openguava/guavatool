@@ -7,7 +7,7 @@ import io.github.openguava.guavatool.core.util.StringUtils;
  * 
  * @author openguava
  */
-public class NotPermissionException extends RuntimeException {
+public class NotPermissionException extends AuthenticationException {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -17,5 +17,6 @@ public class NotPermissionException extends RuntimeException {
 
 	public NotPermissionException(String[] permissions) {
 		super(StringUtils.join(permissions, ","));
+		super.setCode(AuthenticationException.CODE_FORBIDDEN);
 	}
 }
