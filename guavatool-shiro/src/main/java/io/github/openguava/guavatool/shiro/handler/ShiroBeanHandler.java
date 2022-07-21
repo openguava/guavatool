@@ -22,9 +22,9 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
-import io.github.openguava.guavatool.shiro.ShiroCacheDao;
 import io.github.openguava.guavatool.shiro.ShiroRealm;
 import io.github.openguava.guavatool.shiro.ShiroWebSessionManager;
+import io.github.openguava.guavatool.shiro.common.AbstractShiroCacheDao;
 import io.github.openguava.guavatool.shiro.redis.RedisCacheManager;
 import io.github.openguava.guavatool.shiro.redis.RedisCacheDao;
 import io.github.openguava.guavatool.shiro.redis.RedisSessionDAO;
@@ -32,9 +32,10 @@ import io.github.openguava.guavatool.spring.util.RedisUtils;
 
 public abstract class ShiroBeanHandler {
 	
-	protected ShiroCacheDao shiroCacheDao;
+	/** shiro 缓存数据访问 */
+	protected AbstractShiroCacheDao shiroCacheDao;
 	
-	public ShiroCacheDao getShiroCacheDao() {
+	public AbstractShiroCacheDao getShiroCacheDao() {
 		if(this.shiroCacheDao == null && RedisUtils.getRedisConnectionFactory() != null) {
 			this.shiroCacheDao = new RedisCacheDao();
 		}
@@ -70,9 +71,9 @@ public abstract class ShiroBeanHandler {
 		if(this.cacheManager == null) {
 			if(this.getShiroCacheDao() != null) {
 				RedisCacheManager redisCacheManager = new RedisCacheManager();
-				redisCacheManager.setCacheDao(this.getShiroCacheDao());
-				redisCacheManager.setExpire(this.getShiroConfigHandler().getRedisCacheTimeout());
-				redisCacheManager.setPrincipalIdFieldName(this.getShiroConfigHandler().getPrincipalIdFieldName());
+				redisCacheManager.setDao(this.getShiroCacheDao());
+				redisCacheManager.getConfig().setExpire(this.getShiroConfigHandler().getRedisCacheTimeout());
+				redisCacheManager.getConfig().setPrincipalIdFieldName(this.getShiroConfigHandler().getPrincipalIdFieldName());
 				this.cacheManager = redisCacheManager;
 			}
 		}
@@ -86,12 +87,12 @@ public abstract class ShiroBeanHandler {
 		if(this.sessionDAO == null) {
 			if(this.getShiroCacheDao() != null) {
 				RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
-				redisSessionDAO.setCacheDao(this.getShiroCacheDao());
+				redisSessionDAO.setDao(this.getShiroCacheDao());
 				// session在redis中的保存时间,最好大于session会话超时时间
 				// redis session 过期时间，比 sessionTimeout 大1分钟
-				redisSessionDAO.setExpire(this.getShiroConfigHandler().getSessionIdTimeout() + 60);
+				redisSessionDAO.getConfig().setExpire(this.getShiroConfigHandler().getSessionIdTimeout() + 60);
 				//session存储值频繁变动时，此处禁用内存缓存
-				redisSessionDAO.setSessionInMemoryEnabled(false);
+				redisSessionDAO.getConfig().setSessionInMemoryEnabled(false);
 				// 自定义会话id生成器
 				SessionIdGenerator sessionIdGenerator = this.getSessionIdGenerator();
 				if(sessionIdGenerator != null) {

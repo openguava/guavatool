@@ -29,7 +29,10 @@ public class ShiroAuthLogic implements AuthLogic {
 
 	@Override
 	public void logout(AuthToken authToken) {
-		// TODO Auto-generated method stub
+		ShiroRealm shiroRealm = ShiroUtils.getShiroRealm();
+		if(shiroRealm != null) {
+			shiroRealm.clearAuthenticationCacheBy((AuthenticationToken)authToken);
+		}
 	}
 
 	@Override
@@ -73,5 +76,4 @@ public class ShiroAuthLogic implements AuthLogic {
 	public Set<String> getRoles() {
 		return ShiroUtils.getShiroPrincipal().getRoles();
 	}
-
 }

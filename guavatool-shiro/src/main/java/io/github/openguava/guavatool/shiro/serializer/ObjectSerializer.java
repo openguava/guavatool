@@ -1,4 +1,4 @@
-package io.github.openguava.guavatool.shiro.redis.serializer;
+package io.github.openguava.guavatool.shiro.serializer;
 
 import java.io.*;
 

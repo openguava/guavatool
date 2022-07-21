@@ -1,4 +1,4 @@
-package io.github.openguava.guavatool.shiro.redis;
+package io.github.openguava.guavatool.shiro.common;
 
 import org.apache.shiro.session.Session;
 

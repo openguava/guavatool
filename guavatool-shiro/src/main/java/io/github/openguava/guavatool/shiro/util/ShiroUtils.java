@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import io.github.openguava.guavatool.core.util.StringUtils;
 import io.github.openguava.guavatool.shiro.ShiroPrincipal;
+import io.github.openguava.guavatool.shiro.ShiroRealm;
 import io.github.openguava.guavatool.shiro.ShiroToken;
 import io.github.openguava.guavatool.shiro.handler.ShiroAuthHandler;
 import io.github.openguava.guavatool.shiro.handler.ShiroConfigHandler;
@@ -363,5 +364,14 @@ public class ShiroUtils {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 获取 ShiroRealm 对象
+	 * @return
+	 */
+	public static ShiroRealm getShiroRealm() {
+		Realm realm = getRealm(null);
+		return (realm instanceof ShiroRealm) ? (ShiroRealm)realm : null;
 	}
 }

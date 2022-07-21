@@ -1,13 +1,13 @@
-package io.github.openguava.guavatool.spring.aop;
+package io.github.openguava.guavatool.spring.aspectj.handler;
 
 import org.aspectj.lang.JoinPoint;
 
-import io.github.openguava.guavatool.spring.aop.annotation.DataScope;
-import io.github.openguava.guavatool.spring.aop.annotation.Log;
-import io.github.openguava.guavatool.spring.aop.aspect.DataScopeAspect;
-import io.github.openguava.guavatool.spring.aop.aspect.LogAspect;
+import io.github.openguava.guavatool.spring.aspectj.DataScopeAspect;
+import io.github.openguava.guavatool.spring.aspectj.LogAspect;
+import io.github.openguava.guavatool.spring.aspectj.annotation.DataScope;
+import io.github.openguava.guavatool.spring.aspectj.annotation.Log;
 
-public interface AopHandler {
+public interface AspectHandler {
 
 	/**
 	 * 处理操作日志

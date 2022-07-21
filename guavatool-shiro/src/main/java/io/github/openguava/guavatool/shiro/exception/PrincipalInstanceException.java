@@ -1,4 +1,4 @@
-package io.github.openguava.guavatool.shiro.redis.exception;
+package io.github.openguava.guavatool.shiro.exception;
 
 public class PrincipalInstanceException extends RuntimeException  {
 

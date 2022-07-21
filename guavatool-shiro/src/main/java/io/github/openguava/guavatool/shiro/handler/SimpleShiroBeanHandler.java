@@ -8,12 +8,12 @@ import org.apache.shiro.web.servlet.Cookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 
-import io.github.openguava.guavatool.shiro.ShiroCacheDao;
+import io.github.openguava.guavatool.shiro.common.AbstractShiroCacheDao;
 
 public class SimpleShiroBeanHandler extends ShiroBeanHandler {
 
 	@Bean
-	public ShiroCacheDao createShiroCacheDao() {
+	public AbstractShiroCacheDao createShiroCacheDao() {
 		return this.getShiroCacheDao();
 	}
 

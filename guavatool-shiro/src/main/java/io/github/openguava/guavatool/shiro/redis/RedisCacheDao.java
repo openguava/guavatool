@@ -7,14 +7,14 @@ import java.util.Set;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import io.github.openguava.guavatool.shiro.ShiroCacheDao;
+import io.github.openguava.guavatool.shiro.common.AbstractShiroCacheDao;
 import io.github.openguava.guavatool.spring.util.RedisUtils;
 
 /**
  * redis 缓存数据访问
  *
  */
-public class RedisCacheDao implements ShiroCacheDao {
+public class RedisCacheDao extends AbstractShiroCacheDao {
 
 	private RedisConnectionFactory redisConnectionFactory;
 	

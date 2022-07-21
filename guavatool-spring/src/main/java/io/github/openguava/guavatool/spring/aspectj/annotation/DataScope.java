@@ -1,4 +1,4 @@
-package io.github.openguava.guavatool.spring.aop.annotation;
+package io.github.openguava.guavatool.spring.aspectj.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

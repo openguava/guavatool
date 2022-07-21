@@ -14,7 +14,7 @@ import io.github.openguava.guavatool.shiro.handler.ShiroAuthHandler;
 import io.github.openguava.guavatool.shiro.util.ShiroUtils;
 
 public class ShiroRealm extends AuthorizingRealm {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShiroRealm.class);
 
 	@Override
@@ -23,7 +23,7 @@ public class ShiroRealm extends AuthorizingRealm {
 		AuthenticationInfo authenticationInfo = shiroAuthHandler.doAuthenticate(this, token);
 		return authenticationInfo;
 	}
-	
+
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		ShiroAuthHandler shiroAuthHandler = ShiroUtils.getShiroAuthHandler();
@@ -36,59 +36,61 @@ public class ShiroRealm extends AuthorizingRealm {
 	protected Object getAuthenticationCacheKey(AuthenticationToken token) {
 		ShiroAuthHandler shiroAuthHandler = ShiroUtils.getShiroAuthHandler();
 		Object cacheKey = shiroAuthHandler.getAuthenticationTokenCacheKey(token);
-		if(cacheKey != null) {
+		if (cacheKey != null) {
 			return cacheKey;
 		}
 		return super.getAuthenticationCacheKey(token);
 	}
-	
+
 	@Override
 	protected Object getAuthenticationCacheKey(PrincipalCollection principals) {
 		ShiroAuthHandler shiroAuthHandler = ShiroUtils.getShiroAuthHandler();
 		Object principal = principals.getPrimaryPrincipal();
 		Object cacheKey = shiroAuthHandler.getAuthenticationPrincipalCacheKey(principal);
-		if(cacheKey != null) {
+		if (cacheKey != null) {
 			return cacheKey;
 		}
 		return super.getAuthenticationCacheKey(principals);
 	}
-	
+
 	@Override
 	protected Object getAuthorizationCacheKey(PrincipalCollection principals) {
 		Object principal = principals.getPrimaryPrincipal();
 		Object cacheKey = this.getAuthorizationCacheKey(principal);
-		if(cacheKey != null) {
+		if (cacheKey != null) {
 			return cacheKey;
 		}
 		return super.getAuthorizationCacheKey(principals);
 	}
-	
+
 	/**
 	 * 获取授权主体信息 缓存 key
+	 * 
 	 * @param principal
 	 * @return
 	 */
 	protected Object getAuthorizationCacheKey(Object principal) {
 		ShiroAuthHandler shiroAuthHandler = ShiroUtils.getShiroAuthHandler();
 		Object cacheKey = shiroAuthHandler.getAuthorizationCacheKey(principal);
-		if(cacheKey != null) {
+		if (cacheKey != null) {
 			return cacheKey;
 		}
 		return null;
 	}
-	
+
 	@Override
 	protected void doClearCache(PrincipalCollection principals) {
 		super.doClearCache(principals);
 	}
-	
+
 	@Override
 	public boolean supports(AuthenticationToken token) {
 		return super.supports(token) || AuthenticationToken.class.isInstance(token);
 	}
-	
+
 	/**
 	 * 清理认证缓存
+	 * 
 	 * @param token
 	 * @return
 	 */
@@ -96,19 +98,20 @@ public class ShiroRealm extends AuthorizingRealm {
 		Object key = this.getAuthenticationCacheKey(token);
 		return this.clearAuthenticationCacheByKey(key);
 	}
-	
+
 	/**
 	 * 清理认证 缓存
+	 * 
 	 * @param token
 	 * @return
 	 */
 	public boolean clearAuthenticationCacheByKey(Object key) {
-		if(key == null) {
+		if (key == null) {
 			return false;
 		}
 		try {
 			Cache<Object, AuthenticationInfo> cache = this.getAuthenticationCache();
-			if(cache != null) {
+			if (cache != null) {
 				cache.remove(key);
 			}
 			return true;
@@ -117,9 +120,10 @@ public class ShiroRealm extends AuthorizingRealm {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * 清理授权缓存
+	 * 
 	 * @param principal
 	 * @return
 	 */
@@ -127,25 +131,38 @@ public class ShiroRealm extends AuthorizingRealm {
 		Object key = this.getAuthorizationCacheKey(principal);
 		return this.clearAuthorizationCacheByKey(key);
 	}
-	
+
 	/**
 	 * 清理授权缓存
+	 * 
 	 * @param key
 	 * @return
 	 */
 	public boolean clearAuthorizationCacheByKey(Object key) {
-		if(key == null) {
+		if (key == null) {
 			return false;
 		}
 		try {
 			Cache<Object, AuthorizationInfo> cache = this.getAuthorizationCache();
-			if(cache != null) {
+			if (cache != null) {
 				cache.remove(key);
 			}
 			return true;
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return false;
+		}
+	}
+
+	/**
+	 * 清理所有用户授权信息缓存
+	 */
+	public void clearAllCachedAuthorizationInfo() {
+		Cache<Object, AuthorizationInfo> cache = this.getAuthorizationCache();
+		if (cache != null) {
+			for (Object key : cache.keys()) {
+				cache.remove(key);
+			}
 		}
 	}
 }
