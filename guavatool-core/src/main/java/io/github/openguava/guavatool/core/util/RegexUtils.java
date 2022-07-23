@@ -1,9 +1,11 @@
 package io.github.openguava.guavatool.core.util;
 
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.openguava.guavatool.core.constant.PatternConstants;
+import io.github.openguava.guavatool.core.constant.StringConstants;
 
 /**
  * 正则工具类
@@ -250,8 +252,239 @@ public class RegexUtils {
 		if (null == content || null == regex) {
 			return null;
 		}
-		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+		Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
 		return get(pattern, content, groupIndex);
+	}
+	
+	/**
+	 * 指定内容中是否有表达式匹配的内容
+	 *
+	 * @param regex   正则表达式
+	 * @param content 被查找的内容
+	 * @return 指定内容中是否有表达式匹配的内容
+	 */
+	public static boolean contains(String regex, CharSequence content) {
+		if (null == regex || null == content) {
+			return false;
+		}
+		final Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
+		return contains(pattern, content);
+	}
+
+	/**
+	 * 指定内容中是否有表达式匹配的内容
+	 *
+	 * @param pattern 编译后的正则模式
+	 * @param content 被查找的内容
+	 * @return 指定内容中是否有表达式匹配的内容
+	 */
+	public static boolean contains(Pattern pattern, CharSequence content) {
+		if (null == pattern || null == content) {
+			return false;
+		}
+		return pattern.matcher(content).find();
+	}
+
+	/**
+	 * 找到指定正则匹配到字符串的开始位置
+	 *
+	 * @param regex   正则
+	 * @param content 字符串
+	 * @return 位置，{@code null}表示未找到
+	 */
+	public static MatchResult indexOf(String regex, CharSequence content) {
+		if (null == regex || null == content) {
+			return null;
+		}
+		final Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
+		return indexOf(pattern, content);
+	}
+
+	/**
+	 * 找到指定模式匹配到字符串的开始位置
+	 *
+	 * @param pattern 模式
+	 * @param content 字符串
+	 * @return 位置，{@code null}表示未找到
+	 */
+	public static MatchResult indexOf(Pattern pattern, CharSequence content) {
+		if (null != pattern && null != content) {
+			final Matcher matcher = pattern.matcher(content);
+			if (matcher.find()) {
+				return matcher.toMatchResult();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 找到指定正则匹配到第一个字符串的位置
+	 *
+	 * @param regex   正则
+	 * @param content 字符串
+	 * @return 位置，{@code null}表示未找到
+	 */
+	public static MatchResult lastIndexOf(String regex, CharSequence content) {
+		if (null == regex || null == content) {
+			return null;
+		}
+		final Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
+		return lastIndexOf(pattern, content);
+	}
+
+	/**
+	 * 找到指定模式匹配到最后一个字符串的位置
+	 *
+	 * @param pattern 模式
+	 * @param content 字符串
+	 * @return 位置，{@code null}表示未找到
+	 */
+	public static MatchResult lastIndexOf(Pattern pattern, CharSequence content) {
+		MatchResult result = null;
+		if (null != pattern && null != content) {
+			final Matcher matcher = pattern.matcher(content);
+			while (matcher.find()) {
+				result = matcher.toMatchResult();
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除匹配的第一个内容
+	 *
+	 * @param regex   正则
+	 * @param content 被匹配的内容
+	 * @return 删除后剩余的内容
+	 */
+	public static String delFirst(String regex, CharSequence content) {
+		if (StringUtils.hasBlank(regex, content)) {
+			return StringUtils.toString(content);
+		}
+		final Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
+		return delFirst(pattern, content);
+	}
+
+	/**
+	 * 删除匹配的第一个内容
+	 *
+	 * @param pattern 正则
+	 * @param content 被匹配的内容
+	 * @return 删除后剩余的内容
+	 */
+	public static String delFirst(Pattern pattern, CharSequence content) {
+		return replaceFirst(pattern, content, StringConstants.STRING_EMPTY);
+	}
+
+	/**
+	 * 替换匹配的第一个内容
+	 *
+	 * @param pattern     正则
+	 * @param content     被匹配的内容
+	 * @param replacement 替换的内容
+	 * @return 替换后剩余的内容
+	 * @since 5.6.5
+	 */
+	public static String replaceFirst(Pattern pattern, CharSequence content, String replacement) {
+		if (null == pattern || StringUtils.isEmpty(content)) {
+			return StringUtils.toString(content);
+		}
+		return pattern.matcher(content).replaceFirst(replacement);
+	}
+
+	/**
+	 * 删除匹配的最后一个内容
+	 *
+	 * @param regex 正则
+	 * @param str   被匹配的内容
+	 * @return 删除后剩余的内容
+	 */
+	public static String delLast(String regex, CharSequence str) {
+		if (StringUtils.hasBlank(regex, str)) {
+			return StringUtils.toString(str);
+		}
+		final Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
+		return delLast(pattern, str);
+	}
+
+	/**
+	 * 删除匹配的最后一个内容
+	 *
+	 * @param pattern 正则
+	 * @param str     被匹配的内容
+	 * @return 删除后剩余的内容
+	 */
+	public static String delLast(Pattern pattern, CharSequence str) {
+		if (null != pattern && StringUtils.isNotEmpty(str)) {
+			final MatchResult matchResult = lastIndexOf(pattern, str);
+			if (null != matchResult) {
+				return StringUtils.subPre(str, matchResult.start()) + StringUtils.subSuf(str, matchResult.end());
+			}
+		}
+		return StringUtils.toString(str);
+	}
+
+	/**
+	 * 删除匹配的全部内容
+	 *
+	 * @param regex   正则
+	 * @param content 被匹配的内容
+	 * @return 删除后剩余的内容
+	 */
+	public static String delAll(String regex, CharSequence content) {
+		if (StringUtils.hasBlank(regex, content)) {
+			return StringUtils.toString(content);
+		}
+		final Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
+		return delAll(pattern, content);
+	}
+
+	/**
+	 * 删除匹配的全部内容
+	 *
+	 * @param pattern 正则
+	 * @param content 被匹配的内容
+	 * @return 删除后剩余的内容
+	 */
+	public static String delAll(Pattern pattern, CharSequence content) {
+		if (null == pattern || StringUtils.isBlank(content)) {
+			return StringUtils.toString(content);
+		}
+		return pattern.matcher(content).replaceAll(StringConstants.STRING_EMPTY);
+	}
+
+	/**
+	 * 删除正则匹配到的内容之前的字符 如果没有找到，则返回原文
+	 *
+	 * @param regex   定位正则
+	 * @param content 被查找的内容
+	 * @return 删除前缀后的新内容
+	 */
+	public static String delPre(String regex, CharSequence content) {
+		if (null == content || null == regex) {
+			return StringUtils.toString(content);
+		}
+		final Pattern pattern = PatternConstants.getPattern(regex, Pattern.DOTALL);
+		return delPre(pattern, content);
+	}
+
+	/**
+	 * 删除正则匹配到的内容之前的字符 如果没有找到，则返回原文
+	 *
+	 * @param pattern 定位正则模式
+	 * @param content 被查找的内容
+	 * @return 删除前缀后的新内容
+	 */
+	public static String delPre(Pattern pattern, CharSequence content) {
+		if (null == content || null == pattern) {
+			return StringUtils.toString(content);
+		}
+
+		final Matcher matcher = pattern.matcher(content);
+		if (matcher.find()) {
+			return StringUtils.sub(content, matcher.end(), content.length());
+		}
+		return StringUtils.toString(content);
 	}
 	
 	/**
@@ -288,6 +521,6 @@ public class RegexUtils {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(isChinese("中"));
+		System.out.println("");
 	}
 }

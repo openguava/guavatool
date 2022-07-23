@@ -13,6 +13,9 @@ public class StringConstants {
 	/** 空json字符串  */
 	public static final String STRING_EMPTY_JSON = "{}";
 	
+	/** 点符号 */
+	public static final String STRING_DOT = ".";
+	
 	/** 空格字符串 */
 	public static final String STRING_SPACE = String.valueOf(CharConstants.CHAR_SPACE);
 	

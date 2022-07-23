@@ -1,5 +1,7 @@
 package io.github.openguava.guavatool.core.util;
 
+import io.github.openguava.guavatool.core.constant.CharConstants;
+
 /**
  * 字符工具类
  * @author openguava
@@ -178,6 +180,17 @@ public class CharUtils {
     public static boolean isHighSurrogate(char ch) {
         return ('\uD800' <= ch && '\uDBFF' >= ch);
     }
+    
+	/**
+	 * 是否为Windows或者Linux（Unix）文件分隔符<br>
+	 * Windows平台下分隔符为\，Linux（Unix）为/
+	 *
+	 * @param c 字符
+	 * @return 是否为Windows或者Linux（Unix）文件分隔符
+	 */
+	public static boolean isFileSeparator(char c) {
+		return CharConstants.CHAR_SLASH == c || CharConstants.CHAR_BACKSLASH == c;
+	}
     
     /**
 	 * 获取给定字符的16进制数值

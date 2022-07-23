@@ -2,6 +2,9 @@ package io.github.openguava.guavatool.core.constant;
 
 import java.util.regex.Pattern;
 
+import io.github.openguava.guavatool.core.cache.SimpleCache;
+import io.github.openguava.guavatool.core.lang.FuncR;
+
 /**
  * 正则模式常量
  * @author openguava
@@ -9,6 +12,8 @@ import java.util.regex.Pattern;
  */
 public class PatternConstants {
 
+	private static final SimpleCache<RegexWithFlag, Pattern> CACHE = new SimpleCache<>();
+	
 	/** 英文字母 、数字和下划线 */
 	public final static Pattern PATTERN_GENERAL = Pattern.compile("^\\w+$");
 	
@@ -41,4 +46,104 @@ public class PatternConstants {
 
 	/** MAC 地址 */
 	public static final Pattern PATTERN_MAC_ADDRESS = Pattern.compile("((?:[A-F0-9]{1,2}[:-]){5}[A-F0-9]{1,2})|(?:0x)(\\d{12})(?:.+ETHER)", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * 先从Pattern池中查找正则对应的{@link Pattern}，找不到则编译正则表达式并入池。
+	 *
+	 * @param regex 正则表达式
+	 * @return {@link Pattern}
+	 */
+	public static Pattern getPattern(String regex) {
+		return getPattern(regex, 0);
+	}
+
+	/**
+	 * 先从Pattern池中查找正则对应的{@link Pattern}，找不到则编译正则表达式并入池。
+	 *
+	 * @param regex 正则表达式
+	 * @param flags 正则标识位集合 {@link Pattern}
+	 * @return {@link Pattern}
+	 */
+	public static Pattern getPattern(final String regex, final int flags) {
+		final RegexWithFlag regexWithFlag = new RegexWithFlag(regex, flags);
+		return CACHE.get(regexWithFlag, new FuncR<Pattern>() {
+			
+			@Override
+			public Pattern call() {
+				return Pattern.compile(regex, flags);
+			}
+		});
+	}
+
+	/**
+	 * 移除缓存
+	 *
+	 * @param regex 正则
+	 * @param flags 标识
+	 * @return 移除的{@link Pattern}，可能为{@code null}
+	 */
+	public static Pattern removePattern(String regex, int flags) {
+		return CACHE.remove(new RegexWithFlag(regex, flags));
+	}
+
+	/**
+	 * 清空缓存池
+	 */
+	public static void clearPattern() {
+		CACHE.clear();
+	}
+	
+	/**
+	 * 正则表达式和正则标识位的包装
+	 *
+	 * @author openguava
+	 */
+	private static class RegexWithFlag {
+		
+		private final String regex;
+		
+		private final int flag;
+
+		/**
+		 * 构造
+		 *
+		 * @param regex 正则
+		 * @param flag  标识
+		 */
+		public RegexWithFlag(String regex, int flag) {
+			this.regex = regex;
+			this.flag = flag;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + flag;
+			result = prime * result + ((regex == null) ? 0 : regex.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			RegexWithFlag other = (RegexWithFlag) obj;
+			if (flag != other.flag) {
+				return false;
+			}
+			if (regex == null) {
+				return other.regex == null;
+			} else {
+				return regex.equals(other.regex);
+			}
+		}
+	}
 }

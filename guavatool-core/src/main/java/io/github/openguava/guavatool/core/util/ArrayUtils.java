@@ -141,6 +141,86 @@ public class ArrayUtils {
 	}
 	
 	/**
+	 * 返回数组中指定元素所在位置，忽略大小写，未找到返回{@link #INDEX_NOT_FOUND}
+	 *
+	 * @param array 数组
+	 * @param value 被检查的元素
+	 * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
+	 */
+	public static int indexOfIgnoreCase(CharSequence[] array, CharSequence value) {
+		if (null != array) {
+			for (int i = 0; i < array.length; i++) {
+				if (StringUtils.equalsIgnoreCase(array[i], value)) {
+					return i;
+				}
+			}
+		}
+		return INDEX_NOT_FOUND;
+	}
+	
+	/**
+	 * 数组中是否包含元素
+	 *
+	 * @param <T>   数组元素类型
+	 * @param array 数组
+	 * @param value 被检查的元素
+	 * @return 是否包含
+	 */
+	public static <T> boolean contains(T[] array, T value) {
+		return indexOf(array, value) > INDEX_NOT_FOUND;
+	}
+
+	/**
+	 * 数组中是否包含指定元素中的任意一个
+	 *
+	 * @param <T>    数组元素类型
+	 * @param array  数组
+	 * @param values 被检查的多个元素
+	 * @return 是否包含指定元素中的任意一个
+	 * @since 4.1.20
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> boolean containsAny(T[] array, T... values) {
+		for (T value : values) {
+			if (contains(array, value)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 数组中是否包含指定元素中的全部
+	 *
+	 * @param <T>    数组元素类型
+	 * @param array  数组
+	 * @param values 被检查的多个元素
+	 * @return 是否包含指定元素中的全部
+	 * @since 5.4.7
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> boolean containsAll(T[] array, T... values) {
+		for (T value : values) {
+			if (!contains(array, value)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 数组中是否包含元素，忽略大小写
+	 *
+	 * @param array 数组
+	 * @param value 被检查的元素
+	 * @return 是否包含
+	 * @since 3.1.2
+	 */
+	public static boolean containsIgnoreCase(CharSequence[] array, CharSequence value) {
+		return indexOfIgnoreCase(array, value) > INDEX_NOT_FOUND;
+	}
+	
+	/**
 	 * 将新元素插入到到已有数组中的某个位置<br>
 	 * 添加新元素会生成一个新数组或原有数组<br>
 	 * 如果插入位置为为负数，那么生成一个由插入元素顺序加已有数组顺序的新数组
@@ -243,7 +323,7 @@ public class ArrayUtils {
 	 * @param newElements 新元素
 	 * @return 新数组
 	 */
-	@SuppressWarnings({"unchecked", "SuspiciousSystemArraycopy"})
+	@SuppressWarnings({"unchecked"})
 	public static <T> Object insert(Object array, int index, T... newElements) {
 		if (isEmpty(newElements)) {
 			return array;

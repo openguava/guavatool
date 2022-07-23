@@ -306,11 +306,12 @@ public class URLUtils {
 	 * @return 拼接后的url字符串 
 	 */
 	public static String joinParameter(String url, String key, Object value) {
+		String strValue = StringUtils.toString(value, CharsetConstants.CHARSET_UTF_8);
 		// 如果参数为空, 直接返回 
-		if(StringUtils.isEmpty(url) || StringUtils.isEmpty(key) || StringUtils.isEmpty(value)) {
+		if(StringUtils.isEmpty(url) || StringUtils.isEmpty(key) || StringUtils.isEmpty(strValue)) {
 			return url;
 		}
-		return joinParameter(url, key + "=" + value);
+		return joinParameter(url, key + "=" + strValue);
 	}
 	
 	/**

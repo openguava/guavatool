@@ -11,10 +11,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import io.github.openguava.guavatool.core.constant.CharConstants;
 import io.github.openguava.guavatool.core.constant.StringConstants;
+import io.github.openguava.guavatool.core.lang.Predicate;
 import io.github.openguava.guavatool.core.text.AntPathMatcher;
 
 /**
@@ -33,8 +35,8 @@ public class StringUtils {
 	 * @param str
 	 * @return
 	 */
-	public static boolean isEmpty(Object str) {
-		return str == null || StringConstants.STRING_EMPTY.equals(str);
+	public static boolean isEmpty(CharSequence str) {
+		return str == null || str.length() == 0;
 	}
 	
 	/**
@@ -42,7 +44,7 @@ public class StringUtils {
 	 * @param str
 	 * @return
 	 */
-	public static boolean isNotEmpty(String str) {
+	public static boolean isNotEmpty(CharSequence str) {
 		return !isEmpty(str);
 	}
 	
@@ -81,6 +83,40 @@ public class StringUtils {
 	}
 	
 	/********************** END isBlank/isNotBlank *************************/
+	
+	/**
+	 * <p>指定字符串数组中，是否包含空字符串。</p>
+	 * <p>如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。</p>
+	 * <br>
+	 *
+	 * <p>例：</p>
+	 * <ul>
+	 *     <li>{@code StrUtil.hasBlank()                  // true}</li>
+	 *     <li>{@code StrUtil.hasBlank("", null, " ")     // true}</li>
+	 *     <li>{@code StrUtil.hasBlank("123", " ")        // true}</li>
+	 *     <li>{@code StrUtil.hasBlank("123", "abc")      // false}</li>
+	 * </ul>
+	 *
+	 * <p>注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：</p>
+	 * <ul>
+	 *     <li>hasBlank(CharSequence...)            等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
+	 *     <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+	 * </ul>
+	 *
+	 * @param strs 字符串列表
+	 * @return 是否包含空字符串
+	 */
+	public static boolean hasBlank(CharSequence... strs) {
+		if (ArrayUtils.isEmpty(strs)) {
+			return true;
+		}
+		for (CharSequence str : strs) {
+			if (isBlank(str)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/********************** BEGIN hasLength/hasText/contains *************************/
 	
@@ -247,6 +283,17 @@ public class StringUtils {
         return true;
     }
     
+	/**
+	 * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
+	 *
+	 * @param str      指定字符串
+	 * @param testStrs 需要检查的字符串数组
+	 * @return 是否包含任意一个字符串
+	 */
+	public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
+		return getContainsStr(str, testStrs) != null;
+	}
+	
     /**
      * <p>
      * Checks if the String contains any character in the given set of characters.
@@ -369,7 +416,105 @@ public class StringUtils {
 	 * @return
 	 */
 	public static String trim(String str) {
-		return str != null ? str.trim() : null;
+		//return str != null ? str.trim() : null;
+		return (null == str) ? null : trim(str, 0);
+	}
+	
+	/**
+	 * 除去字符串头部的空白，如果字符串是{@code null}，则返回{@code null}。
+	 *
+	 * <p>
+	 * 注意，和{@link String#trim()}不同，此方法使用{@link CharUtil#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
+	 *
+	 * <pre>
+	 * trimStart(null)         = null
+	 * trimStart(&quot;&quot;)           = &quot;&quot;
+	 * trimStart(&quot;abc&quot;)        = &quot;abc&quot;
+	 * trimStart(&quot;  abc&quot;)      = &quot;abc&quot;
+	 * trimStart(&quot;abc  &quot;)      = &quot;abc  &quot;
+	 * trimStart(&quot; abc &quot;)      = &quot;abc &quot;
+	 * </pre>
+	 *
+	 * @param str 要处理的字符串
+	 * @return 除去空白的字符串，如果原字串为{@code null}或结果字符串为{@code ""}，则返回 {@code null}
+	 */
+	public static String trimStart(CharSequence str) {
+		return trim(str, -1);
+	}
+
+	/**
+	 * 除去字符串尾部的空白，如果字符串是{@code null}，则返回{@code null}。
+	 *
+	 * <p>
+	 * 注意，和{@link String#trim()}不同，此方法使用{@link CharUtil#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
+	 *
+	 * <pre>
+	 * trimEnd(null)       = null
+	 * trimEnd(&quot;&quot;)         = &quot;&quot;
+	 * trimEnd(&quot;abc&quot;)      = &quot;abc&quot;
+	 * trimEnd(&quot;  abc&quot;)    = &quot;  abc&quot;
+	 * trimEnd(&quot;abc  &quot;)    = &quot;abc&quot;
+	 * trimEnd(&quot; abc &quot;)    = &quot; abc&quot;
+	 * </pre>
+	 *
+	 * @param str 要处理的字符串
+	 * @return 除去空白的字符串，如果原字串为{@code null}或结果字符串为{@code ""}，则返回 {@code null}
+	 */
+	public static String trimEnd(CharSequence str) {
+		return trim(str, 1);
+	}
+	
+	/**
+	 * 除去字符串头尾部的空白符，如果字符串是{@code null}，依然返回{@code null}。
+	 *
+	 * @param str  要处理的字符串
+	 * @param mode {@code -1}表示trimStart，{@code 0}表示trim全部， {@code 1}表示trimEnd
+	 * @return 除去指定字符后的的字符串，如果原字串为{@code null}，则返回{@code null}
+	 */
+	public static String trim(CharSequence str, int mode) {
+		return trim(str, mode, new Predicate<Character>() {
+			
+			@Override
+			public boolean test(Character obj) {
+				return CharUtils.isBlankChar(obj);
+			}
+		});
+	}
+	
+	/**
+	 * 按照断言，除去字符串头尾部的断言为真的字符，如果字符串是{@code null}，依然返回{@code null}。
+	 *
+	 * @param str       要处理的字符串
+	 * @param mode      {@code -1}表示trimStart，{@code 0}表示trim全部， {@code 1}表示trimEnd
+	 * @param predicate 断言是否过掉字符，返回{@code true}表述过滤掉，{@code false}表示不过滤
+	 * @return 除去指定字符后的的字符串，如果原字串为{@code null}，则返回{@code null}
+	 */
+	public static String trim(CharSequence str, int mode, Predicate<Character> predicate) {
+		String result;
+		if (str == null) {
+			result = null;
+		} else {
+			int length = str.length();
+			int start = 0;
+			int end = length;// 扫描字符串头部
+			if (mode <= 0) {
+				while ((start < end) && (predicate.test(str.charAt(start)))) {
+					start++;
+				}
+			}// 扫描字符串尾部
+			if (mode >= 0) {
+				while ((start < end) && (predicate.test(str.charAt(end - 1)))) {
+					end--;
+				}
+			}
+			if ((start > 0) || (end < length)) {
+				result = str.toString().substring(start, end);
+			} else {
+				result = str.toString();
+			}
+		}
+
+		return result;
 	}
 	
 	/**
@@ -1012,7 +1157,7 @@ public class StringUtils {
 	 * @return 是否匹配
 	 */
 	public static boolean matches(String str, List<String> strs) {
-		if (isEmpty(str) || isEmpty(strs)) {
+		if (isEmpty(str) || CollectionUtils.isEmpty(strs)) {
 			return false;
 		}
 		for (String pattern : strs) {
@@ -1164,7 +1309,7 @@ public class StringUtils {
 			return null;
 		}
 		if (obj instanceof String) {
-			return (String) obj;
+			return (String)obj;
 		} else if (obj instanceof byte[]) {
 			return toString((byte[]) obj, charset);
 		} else if (obj instanceof Byte[]) {
@@ -1177,11 +1322,123 @@ public class StringUtils {
 		return obj.toString();
 	}
 	
+	/**
+	 * 将byte数组转为字符串
+	 *
+	 * @param bytes   byte数组
+	 * @param charset 字符集
+	 * @return 字符串
+	 */
+	public static String toString(byte[] bytes, String charset) {
+		return toString(bytes, CharsetUtils.charset(charset));
+	}
+
+	/**
+	 * 解码字节码
+	 *
+	 * @param data    字符串
+	 * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+	 * @return 解码后的字符串
+	 */
+	public static String toString(byte[] data, Charset charset) {
+		if (data == null) {
+			return null;
+		}
+		if (null == charset) {
+			return new String(data);
+		}
+		return new String(data, charset);
+	}
+
+	/**
+	 * 将Byte数组转为字符串
+	 *
+	 * @param bytes   byte数组
+	 * @param charset 字符集
+	 * @return 字符串
+	 */
+	public static String str(Byte[] bytes, String charset) {
+		return toString(bytes, CharsetUtils.charset(charset));
+	}
+
+	/**
+	 * 解码字节码
+	 *
+	 * @param data    字符串
+	 * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+	 * @return 解码后的字符串
+	 */
+	public static String toString(Byte[] data, Charset charset) {
+		if (data == null) {
+			return null;
+		}
+		byte[] bytes = new byte[data.length];
+		Byte dataByte;
+		for (int i = 0; i < data.length; i++) {
+			dataByte = data[i];
+			bytes[i] = (null == dataByte) ? -1 : dataByte;
+		}
+		return toString(bytes, charset);
+	}
+
+	/**
+	 * 将编码的byteBuffer数据转换为字符串
+	 *
+	 * @param data    数据
+	 * @param charset 字符集，如果为空使用当前系统字符集
+	 * @return 字符串
+	 */
+	public static String toString(ByteBuffer data, String charset) {
+		if (data == null) {
+			return null;
+		}
+		return toString(data, CharsetUtils.charset(charset));
+	}
+
+	/**
+	 * 将编码的byteBuffer数据转换为字符串
+	 *
+	 * @param data    数据
+	 * @param charset 字符集，如果为空使用当前系统字符集
+	 * @return 字符串
+	 */
+	public static String toString(ByteBuffer data, Charset charset) {
+		if (null == charset) {
+			charset = Charset.defaultCharset();
+		}
+		return charset.decode(data).toString();
+	}
+
+	/**
+	 * 调用对象的toString方法，null会返回“null”
+	 *
+	 * @param obj 对象
+	 * @return 字符串
+	 * @see String#valueOf(Object)
+	 */
+	public static String toString(Object obj) {
+		return String.valueOf(obj);
+	}
+	
+	/**
+	 * 调用对象的toString方法，null会返回{@code null}
+	 *
+	 * @param obj 对象
+	 * @return 字符串 or {@code null}
+	 */
+	public static String toStringOrNull(Object obj) {
+		return Objects.toString(obj, null);
+	}
+	
+	/**
+	 * 调用对象的toString方法，null会返回空字符
+	 * @param obj
+	 * @return
+	 */
     public static String toStringOrEmpty(final Object obj) {
         return Objects.toString(obj, StringConstants.STRING_EMPTY);
     }
-	
-
+    
 	/**
 	 * 编码字符串<br>
 	 * 使用系统默认编码
@@ -1229,5 +1486,45 @@ public class StringUtils {
 			return str.toString().getBytes();
 		}
 		return str.toString().getBytes(charset);
+	}
+	
+	/**
+	 * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串
+	 *
+	 * @param str      指定字符串
+	 * @param testStrs 需要检查的字符串数组
+	 * @return 被包含的第一个字符串
+	 */
+	public static String getContainsStr(CharSequence str, CharSequence... testStrs) {
+		if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
+			return null;
+		}
+		for (CharSequence checkStr : testStrs) {
+			if (str.toString().contains(checkStr)) {
+				return checkStr.toString();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 生成指定长度的随机字符串
+	 * 
+	 * @param length 字符串的长度
+	 * @return 一个随机字符串
+	 */
+	public static String getRandomString(int length) {
+		String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		Random random = new Random();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < length; i++) {
+			int number = random.nextInt(62);
+			sb.append(str.charAt(number));
+		}
+		return sb.toString();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("");
 	}
 }
