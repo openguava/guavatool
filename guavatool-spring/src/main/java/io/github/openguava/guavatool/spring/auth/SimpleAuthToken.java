@@ -12,7 +12,7 @@ import io.github.openguava.guavatool.spring.constant.AuthConstants;
  */
 public class SimpleAuthToken implements AuthToken {
 
-	private static final long serialVersionUID = -4335854132889553455L;
+	private static final long serialVersionUID = 1L;
 	
 	public SimpleAuthToken() {
 		
@@ -25,7 +25,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * token 应用
 	 */
-	private String tokenApp = AuthConstants.DEFAULT_TOKEN_APP;
+	protected String tokenApp = AuthConstants.DEFAULT_TOKEN_APP;
 	
 	public String getTokenApp() {
 		return this.tokenApp;
@@ -38,7 +38,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * token 类型
 	 */
-	private String tokenType = AuthConstants.DEFAULT_TOKEN_TYPE;
+	protected String tokenType = AuthConstants.DEFAULT_TOKEN_TYPE;
 	
 	public String getTokenType() {
 		return tokenType;
@@ -51,7 +51,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * token设备
 	 */
-	private String tokenDevice = AuthConstants.DEFAULT_TOKEN_DEVICE;
+	protected String tokenDevice = AuthConstants.DEFAULT_TOKEN_DEVICE;
 	
 	public String getTokenDevice() {
 		return tokenDevice;
@@ -64,7 +64,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * token 名称
 	 */
-	private String tokenName = AuthConstants.DEFAULT_TOKEN_NAME;
+	protected String tokenName = AuthConstants.DEFAULT_TOKEN_NAME;
 	
 	public String getTokenName() {
 		return this.tokenName;
@@ -77,7 +77,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * token value
 	 */
-	private Object tokenValue;
+	protected Object tokenValue;
 
 	public Object getTokenValue() {
 		return this.tokenValue;
@@ -90,7 +90,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * token 超时时间(秒)
 	 */
-	private int tokenTimeout = AuthConstants.DEFAULT_TOKEN_TIMEOUT;
+	protected int tokenTimeout = AuthConstants.DEFAULT_TOKEN_TIMEOUT;
 	
 	public int getTokenTimeout() {
 		return this.tokenTimeout;
@@ -103,7 +103,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * token主题信息
 	 */
-	private String tokenSubject;
+	protected String tokenSubject;
 	
 	public String getTokenSubject() {
 		return tokenSubject;
@@ -116,7 +116,7 @@ public class SimpleAuthToken implements AuthToken {
 	/**
 	 * 附加属性集合
 	 */
-	private Map<String, Object> attributes;
+	protected Map<String, Object> attributes;
 	
 	public Map<String, Object> getAttributes() {
 		if(this.attributes == null) {

@@ -6,16 +6,16 @@ import org.apache.shiro.authc.AuthenticationToken;
 
 import io.github.openguava.guavatool.core.exception.auth.NotLoginException;
 import io.github.openguava.guavatool.shiro.util.ShiroUtils;
-import io.github.openguava.guavatool.spring.auth.AuthLogic;
 import io.github.openguava.guavatool.spring.auth.AuthToken;
 import io.github.openguava.guavatool.spring.auth.AuthUser;
+import io.github.openguava.guavatool.spring.auth.logic.AbstractAuthLogic;
 
 /**
  * shiro 认证逻辑
  * @author openguava
  *
  */
-public class ShiroAuthLogic implements AuthLogic {
+public class ShiroAuthLogic extends AbstractAuthLogic {
 
 	@Override
 	public void login(AuthToken authToken) {

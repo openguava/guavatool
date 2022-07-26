@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.openguava</groupId>
 	<artifactId>guavatool-parent</artifactId>
-	<version>0.1.3</version>
+	<version>0.1.4</version>
 	<packaging>pom</packaging>
 	<name>guavatool</name>
 	<description>guavatool</description>
@@ -46,6 +48,7 @@
 		<spring-boot.version>2.3.12.RELEASE</spring-boot.version>
 		<aspectj.version>1.9.8</aspectj.version>
 		<shiro.version>1.9.0</shiro.version>
+		<java-jwt.version>3.19.2</java-jwt.version>
 		<tkmybatis.version>4.2.1</tkmybatis.version>
 		<mybatisplus.version>3.4.3.4</mybatisplus.version>
 		<fluentmybatis.version>1.9.5</fluentmybatis.version>
@@ -147,7 +150,7 @@
 				<artifactId>spring-data-redis</artifactId>
 				<version>${spring-data.version}</version>
 			</dependency>
-			
+
 			<!-- spring-boot -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -185,7 +188,14 @@
 				<artifactId>shiro-cas</artifactId>
 				<version>${shiro.version}</version>
 			</dependency>
-			
+
+			<!-- java-jwt -->
+			<dependency>
+				<groupId>com.auth0</groupId>
+				<artifactId>java-jwt</artifactId>
+				<version>${java-jwt.version}</version>
+			</dependency>
+
 			<!-- tk.mybatis -->
 			<dependency>
 				<groupId>tk.mybatis</groupId>
@@ -257,7 +267,7 @@
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger.core.version}</version>
 			</dependency>
-			
+
 			<!-- swagger.fox -->
 			<dependency>
 				<groupId>io.springfox</groupId>
@@ -288,8 +298,8 @@
 		<module>guavatool-spring</module>
 		<module>guavatool-shiro</module>
 		<module>guavatool-swagger</module>
-    <module>guavatool-mybatis</module>
-  </modules>
+		<module>guavatool-mybatis</module>
+	</modules>
 
 	<build>
 		<resources>

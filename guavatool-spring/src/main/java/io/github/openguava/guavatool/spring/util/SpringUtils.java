@@ -1,14 +1,19 @@
 package io.github.openguava.guavatool.spring.util;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,8 +29,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import io.github.openguava.guavatool.core.constant.HttpConstants;
 import io.github.openguava.guavatool.core.constant.StringConstants;
+import io.github.openguava.guavatool.core.exception.UtilException;
+import io.github.openguava.guavatool.core.util.StringUtils;
 import io.github.openguava.guavatool.spring.context.SpringContextHolder;
 
 /***
@@ -194,7 +205,75 @@ public class SpringUtils {
 		}
 		return request.getServletContext();
 	}
+	
+	/**
+	 * 获取请求函数
+	 * @param request
+	 * @return
+	 */
+	public static String getRequestMethod(HttpServletRequest request) {
+		if(request == null && (request = getRequest()) == null) {
+			return null;
+		}
+		return request.getMethod();
+	}
     
+	/**
+	 * 请求是否为GET函数
+	 * @param request
+	 * @return
+	 */
+	public static boolean isRequestGetMethod(HttpServletRequest request) {
+		String method = getRequestMethod(request);
+		return HttpConstants.HTTP_REQUEST_METHOD_GET.equalsIgnoreCase(method);
+	}
+	
+	/**
+	 * 请求是否为POST函数
+	 * @param request
+	 * @return
+	 */
+	public static boolean isRequestPostMethod(HttpServletRequest request) {
+		String method = getRequestMethod(request);
+		return HttpConstants.HTTP_REQUEST_METHOD_POST.equalsIgnoreCase(method);
+	}
+	
+	/**
+	 * 请求是否为OPTIONS函数
+	 * @param request
+	 * @return
+	 */
+	public static boolean isRequestOptionsMethod(HttpServletRequest request) {
+		String method = getRequestMethod(request);
+		return HttpConstants.HTTP_REQUEST_METHOD_OPTIONS.equalsIgnoreCase(method);
+	}
+	
+	/**
+	 * 请求是否为ajax
+	 * @param request
+	 * @return
+	 */
+	public static boolean isRequestAjax(HttpServletRequest request) {
+		String xRequestedWith = getRequestHeader(request, HttpConstants.HTTP_HEADER_X_REQUESTED_WITH, true);
+		return StringUtils.isNotEmpty(xRequestedWith) && "XMLHttpRequest".equalsIgnoreCase(xRequestedWith);
+	}
+	
+	/**
+	 * 是否为Multipart类型表单，此类型表单用于文件上传
+	 * @param request
+	 * @return
+	 */
+	public static boolean isRequestMultipart(HttpServletRequest request) {
+		if(!isRequestPostMethod(request)) {
+			return false;
+		}
+		String contentType = request.getContentType();
+		if(StringUtils.isEmpty(contentType)) {
+			return false;
+		}
+		return contentType.toLowerCase().startsWith("multipart/");
+	}
+	
 	/**
 	 * 获取 header map
 	 * @param request
@@ -419,6 +498,43 @@ public class SpringUtils {
 	}
 	
 	/**
+	 * 获取请求MultiPart表单文件
+	 * @param request
+	 * @return
+	 */
+	public static List<MultipartFile> getRequestMultipartFiles(HttpServletRequest request){
+		List<MultipartFile> multipartFiles = new ArrayList<>();
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+		if(!multipartResolver.isMultipart(request)){
+			return multipartFiles;
+		}
+		// 转换成多部分request
+        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+        Iterator<String> iterator = multiRequest.getFileNames();
+        while (iterator.hasNext()) {
+        	String name = iterator.next();
+        	List<MultipartFile> files = multiRequest.getFiles(name);
+        	for(MultipartFile file : files){
+        		String fileName = file.getOriginalFilename();
+        		if (StringUtils.isEmpty(fileName)) {
+        			continue;
+        		}
+        		multipartFiles.add(file);
+        	}
+        }
+        return multipartFiles;
+	}
+	
+	/**
+	 * 获取请求客户端UA信息
+	 * @param request
+	 * @return
+	 */
+	public static String getRequestUserAgent(HttpServletRequest request) {
+		return getRequestHeader(request, HttpConstants.HTTP_HEADER_USER_AGENT, true);
+	}
+	
+	/**
 	 * 获取请求根路径
 	 * @param request
 	 * @return
@@ -453,5 +569,59 @@ public class SpringUtils {
 			return StringConstants.STRING_EMPTY;
 		}
 		return request.getServletPath();
+	}
+	
+	/**
+	 * 获取请求 token
+	 * @param request
+	 * @param tokenName token名称
+	 * @param allowHeader 是否允许header参数
+	 * @param allowCookie 是否允许cookie参数
+	 * @param allowUrlParam 是否允许url参数
+	 * @return
+	 */
+	public static String getRequestToken(HttpServletRequest request, String tokenName, boolean allowHeader, boolean allowCookie, boolean allowUrlParam) {
+		if(request == null && (request = getRequest()) == null) {
+			return null;
+		}
+		String tokenValue = null;
+		// header
+		if(allowHeader) {
+			tokenValue = SpringUtils.getRequestHeader(request, tokenName);
+			if(!StringUtils.isEmpty(tokenValue)) {
+				return tokenValue;
+			}
+		}
+		// cookie
+		if(allowCookie) {
+			tokenValue = SpringUtils.getRequestCookieValue(request, tokenName);
+			if(!StringUtils.isEmpty(tokenValue)) {
+				return tokenValue;
+			}
+		}
+		// parameter
+		if(allowUrlParam) {
+			tokenValue = SpringUtils.getRequestParameter(request, tokenName, null);
+			if(!StringUtils.isEmpty(tokenValue)) {
+				return tokenValue;
+			}
+		}
+		return tokenValue;
+	}
+	
+	/**
+	 * 获取响应 PrintWriter 对象
+	 * @param response
+	 * @return
+	 */
+	public static PrintWriter getResponseWriter(ServletResponse response) {
+		if(response == null && (response = getResponse()) == null) {
+			return null;
+		}
+		try {
+			return response.getWriter();
+		} catch (Exception e) {
+			throw new UtilException(e);
+		}
 	}
 }

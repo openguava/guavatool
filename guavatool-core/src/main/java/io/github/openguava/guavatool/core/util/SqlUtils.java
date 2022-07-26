@@ -111,6 +111,7 @@ public class SqlUtils {
 		// 非字符串类型，且能转换为数字
 		if(!(value instanceof String) && NumberUtils.isNumber(value.toString())) {
 			str.append(value);
+			return str.toString();
 		}
 		// 日期类型判断
 		if(value instanceof Date) {
@@ -382,9 +383,9 @@ public class SqlUtils {
 	
 	public static void main(String[] args) {
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
-		values.put("name", "--/*' or */ '' = '");
+		values.put("name", "admin");
 		values.put("id", "1");
-		values.put("status", null);
+		values.put("status", 1L);
 		//values.put("1+1", "1");
 		System.out.println(generateSelectSql("sys_user", "name", "id"));
 		

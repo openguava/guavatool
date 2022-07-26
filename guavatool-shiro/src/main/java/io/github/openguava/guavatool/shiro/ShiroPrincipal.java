@@ -13,7 +13,7 @@ public class ShiroPrincipal extends SimpleAuthUser {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6180589330638601935L;
+	private static final long serialVersionUID = 1L;
 	
 	private String cacheKey;
 	

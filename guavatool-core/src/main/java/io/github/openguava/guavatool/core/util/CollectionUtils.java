@@ -145,8 +145,6 @@ public class CollectionUtils {
 		return new ArrayList<>(newSize);
 	}
 	
-	
-	
 	/**
 	 * 遍历集合
 	 * @param <T>

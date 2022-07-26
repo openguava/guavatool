@@ -18,7 +18,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 用户所属应用
 	 */
-	private String userApp;
+	protected String userApp;
 	
 	public String getUserApp() {
 		return this.userApp;
@@ -31,7 +31,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 用户id
 	 */
-	private String userId;
+	protected String userId;
 	
 	public String getUserId() {
 		return this.userId;
@@ -44,7 +44,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 用户名
 	 */
-	private String username;
+	protected String username;
 	
 	public String getUsername() {
 		return this.username;
@@ -57,7 +57,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 真实姓名
 	 */
-	private String realname;
+	protected String realname;
 	
 	public String getRealname() {
 		return this.realname;
@@ -70,7 +70,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 用户类型
 	 */
-	private String userType;
+	protected String userType;
 	
 	public String getUserType() {
 		return this.userType;
@@ -83,7 +83,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 机构id
 	 */
-	private String orgId;
+	protected String orgId;
 	
 	public String getOrgId() {
 		return this.orgId;
@@ -96,7 +96,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 机构(单位)名称
 	 */
-	private String orgName;
+	protected String orgName;
 	
 	public String getOrgName() {
 		return this.orgName;
@@ -109,7 +109,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 部门(科室)id
 	 */
-	private String deptId;
+	protected String deptId;
 	
 	public String getDeptId() {
 		return this.deptId;
@@ -122,7 +122,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 部门(科室)名称
 	 */
-	private String deptName;
+	protected String deptName;
 	
 	public String getDeptName() {
 		return this.deptName;
@@ -135,7 +135,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 角色集合
 	 */
-	private Set<String> roles;
+	protected Set<String> roles;
 	
 	public Set<String> getRoles() {
 		if(this.roles == null) {
@@ -151,7 +151,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 权限集合
 	 */
-	private Set<String> permissions;
+	protected Set<String> permissions;
 	
 	public Set<String> getPermissions() {
 		if(this.permissions == null) {
@@ -167,7 +167,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * 附加属性集合
 	 */
-	private Map<String, Object> attributes;
+	protected Map<String, Object> attributes;
 	
 	public Map<String, Object> getAttributes() {
 		if(this.attributes == null) {
@@ -197,7 +197,7 @@ public class SimpleAuthUser implements AuthUser, Serializable {
 	/**
 	 * token 信息
 	 */
-	private SimpleAuthToken token;
+	protected SimpleAuthToken token;
 	
 	public SimpleAuthToken getToken() {
 		return this.token;

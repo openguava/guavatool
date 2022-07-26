@@ -2,9 +2,9 @@ package io.github.openguava.guavatool.spring.util;
 
 import java.util.Set;
 
-import io.github.openguava.guavatool.spring.auth.AuthLogic;
 import io.github.openguava.guavatool.spring.auth.AuthToken;
 import io.github.openguava.guavatool.spring.auth.AuthUser;
+import io.github.openguava.guavatool.spring.auth.logic.AuthLogic;
 
 /**
  * 用户认证工具类

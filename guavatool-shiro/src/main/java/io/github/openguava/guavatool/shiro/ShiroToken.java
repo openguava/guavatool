@@ -13,7 +13,7 @@ public class ShiroToken extends SimpleAuthToken implements org.apache.shiro.auth
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7593138366490731545L;
+	private static final long serialVersionUID = 1L;
 	
 	public ShiroToken() {
 		super();
@@ -38,6 +38,7 @@ public class ShiroToken extends SimpleAuthToken implements org.apache.shiro.auth
 	
 	@Override
 	public Object getCredentials() {
+		// 兼容
 		if(this.credentials == null) {
 			this.credentials = super.getTokenValue();
 		}
@@ -46,6 +47,15 @@ public class ShiroToken extends SimpleAuthToken implements org.apache.shiro.auth
 
 	public void setCredentials(Object credentials) {
 		this.credentials = credentials;
+	}
+	
+	@Override
+	public Object getTokenValue() {
+		// 兼容
+		if(super.tokenValue == null && this.credentials != null) {
+			super.tokenValue = this.credentials;
+		}
+		return super.getTokenValue();
 	}
 	
 	private String cacheKey;

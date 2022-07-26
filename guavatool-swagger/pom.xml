@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.github.openguava</groupId>
 		<artifactId>guavatool-parent</artifactId>
-		<version>0.1.3</version>
+		<version>0.1.4</version>
 	</parent>
 	<artifactId>guavatool-swagger</artifactId>
 	<name>guavatool-swagger</name>
